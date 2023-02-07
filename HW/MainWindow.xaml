@@ -27,6 +27,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Label Content="Status Monitor" Grid.ColumnSpan="2"
                    FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -34,13 +36,54 @@
                    FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
             <Label x:Name="StatusConnection" Grid.Column="1" Grid.Row="1"
                    FontSize="20" VerticalAlignment="Center"/>
+            <Label Grid.Row="2" Content="Departments: "
+                   FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Label x:Name="StatusDepartments" Grid.Column="1" Grid.Row="2"
+                   FontSize="20" VerticalAlignment="Center"/>
+            <Label Grid.Row="3" Content="Products: "
+                   FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Label x:Name="StatusProducts" Grid.Column="1" Grid.Row="3"
+                   FontSize="20" VerticalAlignment="Center"/>
+            <Label Grid.Row="4" Content="Managers: "
+                   FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Label x:Name="StatusManagers" Grid.Column="1" Grid.Row="4"
+                   FontSize="20" VerticalAlignment="Center"/>
         </Grid>
-        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
-            <Label Content="Install DB" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center"/>
-            <Button x:Name="InstallDepartaments" Content="Install Departaments"
-                    FontSize="20" Margin="5" Click="InstallDepartaments_Click"/>
-            <Button x:Name="FillDepartaments" Content="Fill Departaments"
-                    FontSize="20" Margin="5" Click="FillDepartaments_Click"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
+                <Label Content="Install DB" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center"/>
+                <Button x:Name="InstallDepartaments" Content="Install Departaments"
+                    FontSize="14" Margin="5" Click="InstallDepartaments_Click"/>
+                <Button x:Name="FillDepartaments" Content="Fill Departaments"
+                    FontSize="14" Margin="5" Click="FillDepartaments_Click"/>
+                <Button x:Name="InstallProducts" Content="Install Products"
+                    FontSize="14" Margin="5" Click="InstallProducts_Click"/>
+                <Button x:Name="InstallManagers" Content="Install Managers"
+                    FontSize="14" Margin="5" Click="InstallManagers_Click"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <Label Content="Delete DB" FontSize="24" FontWeight="DemiBold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button x:Name="DeleteDepartament" Content="- Departaments" FontSize="14" Margin="5" Click="DeleteDepartament_Click"/>
+                <Button x:Name="DeleteProducts" Content="- Products" FontSize="14" Margin="5" Click="DeleteProducts_Click"/>
+                <Button x:Name="DeleteManagers" Content="- Managers" FontSize="14" Margin="5" Click="DeleteManagers_Click"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <Label Content="Departments" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center"/>
+            <TextBox Height="170" IsReadOnly="True" x:Name="ViewDepartments">
+            </TextBox>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Label Content="Managers" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center"/>
+            <TextBox Height="170" IsReadOnly="True" x:Name="ViewManagers"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Grid.Row="0">
+            <Label Content="Products" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center"/>
+            <TextBox Height="170" IsReadOnly="True" x:Name="ViewProducts"/>
         </StackPanel>
     </Grid>
 </Window>
