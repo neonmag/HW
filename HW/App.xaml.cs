@@ -13,5 +13,7 @@ namespace HW
     /// </summary>
     public partial class App : Application
     {
+        public static String ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\ADO\HW\HW\DB.mdf;Integrated Security=True";
+
     }
 }
