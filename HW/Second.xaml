@@ -50,5 +50,25 @@
                 </ListView.View>
             </ListView>
         </StackPanel>
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="1" Grid.Column="0">
+            <Label Content="Менеджери" HorizontalAlignment="Center"
+                   FontSize="22" FontWeight="DemiBold"/>
+            <ListView x:Name="ThirdView" ItemsSource="{Binding managers}" MouseDoubleClick="ThirdView_MouseDoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn
+                            Header="Id"
+                            DisplayMemberBinding="{Binding Path=Id}"/>
+                        <GridViewColumn
+                            Header="Name"
+                            DisplayMemberBinding="{Binding Path=Name}"/>
+                        <GridViewColumn
+                            Header="Name"
+                            DisplayMemberBinding="{Binding Path=Surname}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
     </Grid>
 </Window>
