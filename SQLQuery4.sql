@@ -1,0 +1,2 @@
+﻿ALTER TABLE Departments
+ADD DeleteDt NVARCHAR(50)

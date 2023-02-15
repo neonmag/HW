@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HW"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="Second" Height="450" Width="800">
+        Title="Second" Height="650" Width="800">
     <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -20,7 +20,8 @@
                     Grid.Row="0" Grid.Column="0">
             <Label Content="Відділи" HorizontalAlignment="Center"
                    FontSize="22" FontWeight="DemiBold"/>
-            <ListView x:Name="FirstView" ItemsSource="{Binding departments}" MouseDoubleClick="ListView_MouseDoubleClick">
+            <ListView x:Name="FirstView" ItemsSource="{Binding departments}" Height="280" MouseDoubleClick="ListView_MouseDoubleClick" ScrollViewer.VerticalScrollBarVisibility="Visible"
+          ScrollViewer.CanContentScroll="True">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
@@ -29,32 +30,44 @@
                         <GridViewColumn
                             Header="Name"
                             DisplayMemberBinding="{Binding Path=Name}"/>
+                        <GridViewColumn
+                            Header="Deleted"
+                            DisplayMemberBinding="{Binding Path=Deleted}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
         </StackPanel>
+        <Button Content="New Product" Grid.Row="0" Grid.Column="1" Width="100" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Click="AddButton_Click"/>
         <StackPanel Orientation="Vertical"
                     Grid.Row="0" Grid.Column="2">
             <Label Content="Продукти" HorizontalAlignment="Center"
                    FontSize="22" FontWeight="DemiBold"/>
-            <ListView x:Name="SecondView" ItemsSource="{Binding products}" MouseDoubleClick="SecondView_MouseDoubleClick">
+            <ListView x:Name="SecondView" ItemsSource="{Binding products}" Height="280" MouseDoubleClick="SecondView_MouseDoubleClick"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+          ScrollViewer.CanContentScroll="True">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
                             Header="Id"
-                            DisplayMemberBinding="{Binding Path=Id}"/>
+                            DisplayMemberBinding="{Binding Id}"/>
                         <GridViewColumn
                             Header="Name"
-                            DisplayMemberBinding="{Binding Path=Name}"/>
+                            DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn
+                            Header="Price"
+                            DisplayMemberBinding="{Binding Price}"/>
+                        <GridViewColumn
+                            Header="Deleted"
+                            DisplayMemberBinding="{Binding Deleted}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
         </StackPanel>
         <StackPanel Orientation="Vertical"
-                    Grid.Row="1" Grid.Column="0">
+                    Grid.Row="1" Grid.Column="0" >
             <Label Content="Менеджери" HorizontalAlignment="Center"
                    FontSize="22" FontWeight="DemiBold"/>
-            <ListView x:Name="ThirdView" ItemsSource="{Binding managers}" MouseDoubleClick="ThirdView_MouseDoubleClick">
+            <ListView x:Name="ThirdView" ItemsSource="{Binding managers}" Height="280" MouseDoubleClick="ThirdView_MouseDoubleClick" ScrollViewer.VerticalScrollBarVisibility="Visible"
+          ScrollViewer.CanContentScroll="True">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn

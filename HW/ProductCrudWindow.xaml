@@ -1,0 +1,36 @@
+﻿<Window x:Class="HW.ProductCrudWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HW"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="Product Change" Height="250" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Label Content="ID"/>
+            <TextBlock x:Name="idOf"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Label Content="Name"/>
+            <TextBox x:Name="MyName"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <Label Content="Price"/>
+            <TextBox x:Name="MyPrice"/>
+        </StackPanel>
+        <WrapPanel Grid.Row="4">
+            <Button Content="Save" Margin="50,0" Click="SaveButton_Click"/>
+            <Button Content="Cancel" Margin="50,0" x:Name="Cancel" Click="CancelButton_Click"/>
+            <Button Content="Delete" Margin="0,0" x:Name="Delete" Click="DeleteButton_Click"/>
+        </WrapPanel>
+    </Grid>
+</Window>

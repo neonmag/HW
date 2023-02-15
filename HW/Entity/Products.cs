@@ -9,6 +9,8 @@ namespace HW.Entity
     public class Products
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public String Name { get; set; }
+        public double Price { get; set; }
+        public String Deleted { get; set; }
     }
 }

@@ -1,0 +1,1 @@
+﻿ALTER TABLE Products ALTER COLUMN DeleteDt nvarchar(50);

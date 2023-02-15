@@ -31,6 +31,8 @@ namespace HW
         public ObservableCollection<Entity.Products> products { get; set; }
         public ObservableCollection<Entity.Managers> managers { get; set; }
         public SqlConnection _connection;
+        public DepartmentCrudWindow departmentCrudWindow;
+        public ProductCrudWindow productCrudWindow;
         public Second()
         {
             InitializeComponent();
@@ -47,21 +49,21 @@ namespace HW
             {
                 _connection.Open();
                 SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name FROM Departments D";
+                cmd.CommandText = "SELECT Id, Name, DeleteDt FROM Departments D";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     departments.Add(new Entity.Departments
                     {
                         Id = reader.GetGuid(0),
-                        Name = reader.GetString(1)
-
+                        Name = reader.GetString(1),
+                        Deleted = reader.GetString(2)
                     });
                 }
                 reader.Close();
                 cmd.Dispose();
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
@@ -69,15 +71,18 @@ namespace HW
             try
             {
                 SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name, Price FROM Products D";
+                cmd.CommandText = "SELECT Id, Name, Price, DeleteDt FROM Products D";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     products.Add(new Entity.Products
                     {
                         Id = reader.GetGuid(0),
-                        Name = reader.GetString(1)
+                        Name = reader.GetString(1),
+                        Price = reader.GetDouble(2),
+                        Deleted = reader.GetString(3)
                     }) ;
+
                 }
                 reader.Close();
                 cmd.Dispose();
@@ -113,17 +118,67 @@ namespace HW
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(departments[FirstView.SelectedIndex].Name + "\n" + departments[FirstView.SelectedIndex].Id);
+            departmentCrudWindow = new(_connection);
+            departmentCrudWindow.Department = departments[FirstView.SelectedIndex];
+            departmentCrudWindow.ShowDialog();
         }
 
         private void SecondView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(products[SecondView.SelectedIndex].Name + "\n" + products[SecondView.SelectedIndex].Id);
+            productCrudWindow = new(_connection);
+            productCrudWindow.Product = products[SecondView.SelectedIndex];
+            productCrudWindow.ShowDialog();
         }
 
         private void ThirdView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show(managers[ThirdView.SelectedIndex].Name + " " + managers[ThirdView.SelectedIndex].Surname + "\n" + managers[ThirdView.SelectedIndex].Id);
+        }
+
+        private void SecondView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProductCrudWindow dialog = new(_connection);
+            if (dialog.ShowDialog() == true)
+            { 
+                if (dialog.Product is not null)
+                {
+                    String sql = "INSERT INTO Products(Id,Name,Price) VALUES (@id,@name,@price)";
+                    using SqlCommand cmd = new(sql, _connection);
+                    cmd.Parameters.AddWithValue("@id", dialog.Product.Id);
+                    cmd.Parameters.AddWithValue("@name", dialog.Product.Name);
+                    cmd.Parameters.AddWithValue("@price", dialog.Product.Price);
+                    
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Insert OK");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                    // Не рекомендовано
+                    //String sql = $"INSERT INTO Product(Id, Name, Price)"
+                    //    + $"VALUES(`{productCrudWindow.Product.Id}`, N`{productCrudWindow.Product.Name}`, {productCrudWindow.Product.Price}";
+                    //using SqlCommand cmd = new(sql, _connection);
+                    //try
+                    //{
+                    //    cmd.ExecuteNonQuery();
+                    //    MessageBox.Show("Insert OK");
+                    //}
+                    //catch(Exception ex)
+                    //{
+                    //    MessageBox.Show(ex.Message);
+                    //}
+                }
+            }
         }
     }
 }
