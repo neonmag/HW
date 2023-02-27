@@ -75,14 +75,7 @@ namespace HW
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    products.Add(new Entity.Products
-                    {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Price = reader.GetDouble(2),
-                        Deleted = reader.GetString(3)
-                    }) ;
-
+                    products.Add(new(reader));
                 }
                 reader.Close();
                 cmd.Dispose();
@@ -95,7 +88,7 @@ namespace HW
             try
             {
                 SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name, Surname FROM Managers D";
+                cmd.CommandText = "SELECT Id, Name, Surname, Secname, Id_main_dep,Id_sec_dep, Id_chief, DeleteDt FROM Managers D";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -103,8 +96,17 @@ namespace HW
                     {
                         Id = reader.GetGuid(0),
                         Name = reader.GetString(1),
-                        Surname = reader.GetString(2)
-                    });
+                        Surname = reader.GetString(2),
+                        Secname = reader.GetString(3),
+                        IdMainDep = reader.GetGuid(4),
+                        IdSecDep = reader.GetValue(5) == DBNull.Value
+                        ? null
+                        : reader.GetGuid(5),
+                        IdChief = reader.GetValue(6) == DBNull.Value
+                        ? null
+                        : reader.GetGuid(6),
+                        Deleted = reader.GetString(7)
+                    }) ;
                 }
                 reader.Close();
                 cmd.Dispose();
@@ -132,7 +134,14 @@ namespace HW
 
         private void ThirdView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(managers[ThirdView.SelectedIndex].Name + " " + managers[ThirdView.SelectedIndex].Surname + "\n" + managers[ThirdView.SelectedIndex].Id);
+            if(sender is ListView item)
+            {
+                if(item.SelectedItem is Entity.Managers manager)
+                {
+                    ManagerCrudWindow dialog = new(_connection) { Owner = this, Manager = manager };
+                    dialog.ShowDialog();
+                }
+            }
         }
 
         private void SecondView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)

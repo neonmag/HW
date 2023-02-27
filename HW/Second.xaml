@@ -79,6 +79,21 @@
                         <GridViewColumn
                             Header="Name"
                             DisplayMemberBinding="{Binding Path=Surname}"/>
+                        <GridViewColumn
+                            Header="Second Name"
+                            DisplayMemberBinding="{Binding Path=Secname}"/>
+                        <GridViewColumn
+                            Header="Main Department"
+                            DisplayMemberBinding="{Binding Path=IdMainDep}"/>
+                        <GridViewColumn
+                            Header="Second Department"
+                            DisplayMemberBinding="{Binding Path=IdSecDep}"/>
+                        <GridViewColumn
+                            Header="Chief"
+                            DisplayMemberBinding="{Binding Path=IdChief}"/>
+                        <GridViewColumn
+                            Header="Deleted"
+                            DisplayMemberBinding="{Binding Path=Deleted}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

@@ -1,2 +1,1 @@
-﻿ALTER TABLE Products
-ADD DeleteDt DATETIME
+﻿ALTER TABLE Managers ADD DeleteDt NVARCHAR(50)

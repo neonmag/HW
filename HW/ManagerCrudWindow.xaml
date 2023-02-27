@@ -1,0 +1,84 @@
+﻿<Window x:Class="HW.ManagerCrudWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HW"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="ManagerCrudWindow" Height="450" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Label Content="ID"/>
+            <TextBlock x:Name="idOf"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Label Content="Name"/>
+            <TextBox x:Name="MyName"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <Label Content="Surname"/>
+            <TextBox x:Name="MySurname"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3">
+            <Label Content="Second Name"/>
+            <TextBox x:Name="MySecondName"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4">
+            <Label Content="Main Department"/>
+            <ComboBox x:Name="MyMainDep" ItemsSource="{Binding departments}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Row="5">
+            <Label Content="Second Department"/>
+            <ComboBox x:Name="MySecondDep" ItemsSource="{Binding departments}" Width="350" HorizontalAlignment="Left">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <Button x:Name="Clear" Content="Clear" Grid.Row="5" Height="25" Width="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5" Click="Clear_Click"/>
+        <StackPanel Grid.Row="6">
+            <Label Content="Chief"/>
+            <ComboBox x:Name="MyChief" ItemsSource="{Binding managers}" Width="350" HorizontalAlignment="Left">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}"/>
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding Path=Surname}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <Button x:Name="ClearChief" Content="Clear" Grid.Row="6" Height="25" Width="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5" Click="ClearChief_Click"/>
+        
+        <WrapPanel Grid.Row="7">
+            <Button Content="Save" Margin="50,0" Click="SaveButton_Click"/>
+            <Button Content="Cancel" Margin="50,0" x:Name="Cancel" Click="CancelButton_Click"/>
+            <Button Content="Delete" Margin="0,0" x:Name="Delete" Click="DeleteButton_Click"/>
+        </WrapPanel>
+    </Grid>
+</Window>
