@@ -30,6 +30,8 @@ namespace HW
         public ObservableCollection<Entity.Departments> departments { get; set; }
         public ObservableCollection<Entity.Products> products { get; set; }
         public ObservableCollection<Entity.Managers> managers { get; set; }
+        public ObservableCollection<Sales> sales { get; set; }
+
         public SqlConnection _connection;
         public DepartmentCrudWindow departmentCrudWindow;
         public ProductCrudWindow productCrudWindow;
@@ -40,6 +42,7 @@ namespace HW
             products = new();
             managers = new();
             DataContext = this;
+            sales = new ObservableCollection<Sales>();
             _connection = new(App.ConnectionString);
         }
 
@@ -116,6 +119,24 @@ namespace HW
                 MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
             }
+
+            try
+            {
+                using SqlCommand cmd = new() { Connection = _connection };
+
+                cmd.CommandText = "SELECT S.* FROM Sales S";
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                    sales.Add(new Sales(reader));
+
+                reader.Close();
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
+            }
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -186,6 +207,70 @@ namespace HW
                     //{
                     //    MessageBox.Show(ex.Message);
                     //}
+                }
+            }
+        }
+
+        private void SalesView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListView item)
+            {
+                if (item.SelectedItem is Sales sale)
+                {
+                    SalesCrudWindow dialog = new SalesCrudWindow() { Owner = this };
+                    dialog.Sale = sale;
+                    if (dialog.ShowDialog() == true)
+                    {
+                        if (dialog.Sale is not null)
+                        {
+                            String sql = "UPDATE Sales SET SaleDate=(@sale_dt), Product_Id=(@product), Quantity=(@quantity), Manager_Id=(@manager), DeleteDt=(@delete) WHERE Id=(@id)";
+                            using SqlCommand cmd = new(sql, _connection);
+                            cmd.Parameters.AddWithValue("@sale_dt", dialog.Sale.SaleDate);
+                            cmd.Parameters.AddWithValue("@product", dialog.Sale.Product_Id);
+                            cmd.Parameters.AddWithValue("@quantity", dialog.Sale.Quantity);
+                            cmd.Parameters.AddWithValue("@manager", dialog.Sale.Manager_Id);
+                            cmd.Parameters.AddWithValue("@delete", dialog.Sale.DeleteDt is null ? DBNull.Value : dialog.Sale.DeleteDt);
+                            cmd.Parameters.AddWithValue("@id", dialog.Sale.Id);
+
+                            try
+                            {
+                                cmd.ExecuteNonQuery();
+                                MessageBox.Show("Зміни збережено!");
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SalesCrudWindow dialog = new SalesCrudWindow() { Owner = this };
+            if (dialog.ShowDialog() == true)
+            {
+                if (dialog.Sale is not null)
+                {
+                    string sql = "INSERT INTO Sales(Id, SaleDate, Product_Id, Quantity, Manager_Id) VALUES(@id, @saleDt, @productId, @quantity, @managerId)";
+                    using SqlCommand cmd = new SqlCommand(sql, _connection);
+                    cmd.Parameters.AddWithValue("@saleDt", dialog.Sale.SaleDate);
+                    cmd.Parameters.AddWithValue("@productId", dialog.Sale.Product_Id);
+                    cmd.Parameters.AddWithValue("@quantity", dialog.Sale.Quantity);
+                    cmd.Parameters.AddWithValue("@managerId", dialog.Sale.Manager_Id);
+                    cmd.Parameters.AddWithValue("@id", dialog.Sale.Id);
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Продаж успішно додано!");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
             }
         }

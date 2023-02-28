@@ -1,1 +1,2 @@
-﻿ALTER TABLE Managers ADD DeleteDt NVARCHAR(50)
+﻿ALTER TABLE Sales
+ADD DeleteDt DATETIME

@@ -98,5 +98,38 @@
                 </ListView.View>
             </ListView>
         </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <WrapPanel>
+                <Label Content="Продажі" HorizontalAlignment="Center"
+                   FontSize="22" FontWeight="DemiBold"/>
+                <Button Content="New Sale" Click="Button_Click"></Button>
+            </WrapPanel>
+            <ListView x:Name="SalesView" ItemsSource="{Binding sales}" Height="280" MouseDoubleClick="SalesView_MouseDoubleClick"  ScrollViewer.VerticalScrollBarVisibility="Visible"
+          ScrollViewer.CanContentScroll="True">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn
+                            Header="Id"
+                            DisplayMemberBinding="{Binding Path=Id}"/>
+                        <GridViewColumn
+                            Header="Name"
+                            DisplayMemberBinding="{Binding Path=SaleDate}"/>
+                        <GridViewColumn
+                            Header="Name"
+                            DisplayMemberBinding="{Binding Path=Product_Id}"/>
+                        <GridViewColumn
+                            Header="Second Name"
+                            DisplayMemberBinding="{Binding Path=Quantity}"/>
+                        <GridViewColumn
+                            Header="Main Department"
+                            DisplayMemberBinding="{Binding Path=Manager_Id}"/>
+                        <GridViewColumn
+                            Header="Second Department"
+                            DisplayMemberBinding="{Binding Path=DeleteDt}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </StackPanel>
     </Grid>
 </Window>
