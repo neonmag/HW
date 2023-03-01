@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HW.Logger;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -14,6 +15,6 @@ namespace HW
     public partial class App : Application
     {
         public static String ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\ADO\HW\HW\DB.mdf;Integrated Security=True";
-
+        internal static readonly Logger.Logger Logger = new("log.txt");
     }
 }

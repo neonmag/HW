@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 
 namespace HW
@@ -35,6 +36,13 @@ namespace HW
         {
             Second second = new Second();
             second.Show();
+            this.Close();
+        }
+
+        private void OpenThird_Click(object sender, RoutedEventArgs e)
+        {
+            DALWindow third = new DALWindow();
+            third.Show();
             this.Close();
         }
     }
