@@ -105,9 +105,9 @@ namespace HW
                         IdSecDep = reader.GetValue(5) == DBNull.Value
                         ? null
                         : reader.GetGuid(5),
-                        IdChief = reader.GetValue(6) == DBNull.Value
-                        ? null
-                        : reader.GetGuid(6),
+                        IdChief = reader.IsDBNull(6)
+                                    ? null
+                                    : reader.GetGuid(6),
                         Deleted = reader.GetString(7)
                     }) ;
                 }

@@ -57,7 +57,7 @@
             <ListView ItemsSource="{Binding ManagerList}"
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                      MaxHeight="171">
+                      MaxHeight="800">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
@@ -68,7 +68,10 @@
                             DisplayMemberBinding="{Binding Path=Name}"/>
                         <GridViewColumn
                             Header="MainDep"
-                            DisplayMemberBinding="{Binding Path=IdMainDep.Name}"/>
+                            DisplayMemberBinding="{Binding Path=IdMainDep}"/>
+                        <GridViewColumn
+                            Header="Chief"
+                            DisplayMemberBinding="{Binding Path=IdChief}"/>
                     </GridView>
                 </ListView.View>
                 <ListView.Resources>

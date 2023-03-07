@@ -1,12 +1,14 @@
 ﻿using HW.Entity;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Accessibility;
 
 namespace HW.DAL
 {
@@ -82,13 +84,13 @@ namespace HW.DAL
                 return false;
             }
         }
-        public List<Entity.Managers> GetAll(bool includeDeleted = false)
+        public List<Entity.Managers> GetAll(bool includeDeleted = true)
         {
             if (list is not null) { return list; }
 
             list = new();
             try
-            {
+            {   
                 string query = "SELECT * FROM Managers m";
                 if (!includeDeleted) query += " WHERE m.DeleteDt IS NULL";
                 using SqlCommand cmd = new(query, _connection);
