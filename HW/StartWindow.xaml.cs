@@ -45,5 +45,12 @@ namespace HW
             third.Show();
             this.Close();
         }
+
+        private void EF_Click(object sender, RoutedEventArgs e)
+        {
+            EFWindow third = new EFWindow();
+            third.Show();
+            this.Close();
+        }
     }
 }

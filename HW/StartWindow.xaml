@@ -11,9 +11,11 @@
             <RowDefinition Height="50*"/>
             <RowDefinition Height="50*"/>
             <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
         <Button x:Name="OpenFirst" Content="Fill Window" Click="OpenFirst_Click" Width="100" Height="50"/>
         <Button Grid.Row="1" x:Name="ORM" Content="ORM" Click="OpenSecond_Click"  Width="100" Height="50"/>
         <Button Grid.Row="2" x:Name="DAL" Content="DAL" Click="OpenThird_Click"  Width="100" Height="50"/>
+        <Button Grid.Row="3" x:Name="EF" Content="EF" Click="EF_Click"  Width="100" Height="50"/>
     </Grid>
 </Window>
