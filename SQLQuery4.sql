@@ -1,2 +1,2 @@
-﻿ALTER TABLE Departments
-ADD DeleteDt NVARCHAR(50)
+﻿ALTER TABLE Products
+ADD DeleteDt DATETIME

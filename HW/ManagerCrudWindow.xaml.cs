@@ -27,11 +27,10 @@ namespace HW
         public ObservableCollection<Entity.Managers> managers;
         SqlConnection sqlConnection;
 
-        public ManagerCrudWindow(SqlConnection sqlConnection)
+        public ManagerCrudWindow()
         {
             InitializeComponent();
             Manager = null;
-            this.sqlConnection = sqlConnection;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -68,27 +67,16 @@ namespace HW
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure to delete?", "Delete message", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            var result = MessageBox.Show(
+                 $"Do you really want to remove: {Manager.Name} {Manager.Surname}",
+                 "Delete field",
+                 MessageBoxButton.YesNo,
+                 MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
             {
-                Manager.Deleted = DateTime.Now.ToString();
-                MessageBox.Show(Manager.Deleted.ToString());
-                String sql = "UPDATE Managers SET DeleteDt=(@Deleted) WHERE Id=(@id)";
-                using SqlCommand cmd = new(sql, sqlConnection);
-                cmd.Parameters.AddWithValue("@Deleted", Manager.Deleted);
-                cmd.Parameters.AddWithValue("@id", Manager.Id);
-
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Insert OK");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                Manager = null;
+                this.DialogResult = true;
             }
-            this.DialogResult = true; //то, что вернёт ShowDialog
-            //this.Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

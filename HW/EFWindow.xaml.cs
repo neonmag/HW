@@ -62,7 +62,7 @@ namespace HW
 
         private void AddDepartmentButton_Click(object sender, RoutedEventArgs e)
         {
-            DepartmentCrudWindow dialog = new(new System.Data.SqlClient.SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\ADO\HW\HW\DB.mdf;Integrated Security=True"));
+            DepartmentCrudWindow dialog = new();
             if (dialog.ShowDialog() == true)
             {
                 //dialog.Department -- інша сутність, треба замінити під EF
@@ -89,7 +89,7 @@ namespace HW
             {
                 if (item.Content is Department department)
                 {
-                    DepartmentCrudWindow dialog = new(new System.Data.SqlClient.SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\ADO\HW\HW\DB.mdf;Integrated Security=True"));
+                    DepartmentCrudWindow dialog = new();
                     dialog.Department = new Entity.Departments()
                     {
                         Id = department.Id,

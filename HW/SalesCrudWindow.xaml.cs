@@ -92,12 +92,12 @@ namespace HW
             Sale.Quantity = cnt;
 
             if (Product_CmbBx.SelectedItem is Products product)
-                Sale.Product_Id = product.Id;
+                Sale.ProductId = product.Id;
             else
                 MessageBox.Show("Product_CmbBx.SelectedItem CAST Error");
 
             if (ManagerId_CmbBx.SelectedItem is Managers manager)
-                Sale.Manager_Id = manager.Id;
+                Sale.ManagerId = manager.Id;
             else
                 MessageBox.Show("ManagerId_CmbBx.SelectedItem CAST Error");
 
@@ -127,11 +127,11 @@ namespace HW
             {
                 Product_CmbBx.SelectedItem =
                     OwnerProducts
-                    .Where(d => d.Id == Sale.Product_Id)
+                    .Where(d => d.Id == Sale.ProductId)
                     .First();
                 ManagerId_CmbBx.SelectedItem =
                     OwnerManagers
-                    .Where(d => d.Id == Sale.Manager_Id)
+                    .Where(d => d.Id == Sale.ManagerId)
                     .First();
                 Delete_Btn.IsEnabled = true;
             }

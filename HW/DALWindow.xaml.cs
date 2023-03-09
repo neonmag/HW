@@ -47,7 +47,7 @@ namespace HW
             {
                 if (item.SelectedItem is Entity.Departments department)
                 {
-                    DepartmentCrudWindow dialog = new DepartmentCrudWindow(_connection);
+                    DepartmentCrudWindow dialog = new DepartmentCrudWindow();
                     dialog.Department = department;
                     if (dialog.ShowDialog() == true)
                     {
@@ -58,7 +58,7 @@ namespace HW
         }
         private void AddDepartment_Btn_Click(object sender, RoutedEventArgs e)
         {
-            DepartmentCrudWindow dialog = new(_connection);
+            DepartmentCrudWindow dialog = new();
             if (dialog.ShowDialog() == true)
             {
                 dataContext.Departments.Add(dialog.Department);
@@ -67,7 +67,7 @@ namespace HW
 
         private void AddManagerButton_Click(object sender, RoutedEventArgs e)
         {
-            ManagerCrudWindow dialog = new(_connection);
+            ManagerCrudWindow dialog = new();
             if (dialog.ShowDialog() == true)
             {
                 if (dataContext.Managers.Add(dialog.Manager))

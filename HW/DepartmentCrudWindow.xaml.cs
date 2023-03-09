@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace HW
@@ -22,85 +23,136 @@ namespace HW
     /// </summary>
     public partial class DepartmentCrudWindow : Window
     {
+        //Обмінне поле - передається з викликаючого вікна
         public Entity.Departments Department { get; set; }
-        SqlConnection sqlConnection;
-        public DepartmentCrudWindow(SqlConnection sqlConnection)
+
+        private bool SaveButtonState;
+        private bool inputWasChaged;
+        private bool stringIsEmpty;
+        private DispatcherTimer timer;
+        public DepartmentCrudWindow()
         {
             InitializeComponent();
-            Department = null!;
-            this.sqlConnection = sqlConnection;
+            Department = null;
+            BaseOptions();
         }
 
+        private void BaseOptions()
+        {
+            SaveButtonState = true;
+            inputWasChaged = false;
+            stringIsEmpty = false;
+
+            timer = new();
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Tick += new EventHandler(CheckNameField);
+            timer.Start();
+        }
+
+        #region WINDOW_EVENTS
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Department is null)
+            if (Department is null)  // режим додавання (Create)
             {
-                Delete.IsEnabled = false;
-                Department = new Departments { Id = Guid.NewGuid() };
-                idOf.Text = Department.Id.ToString();
+                Department = new Entity.Departments();
+                Department.Id = Guid.NewGuid();
             }
-            else
+            else // режим редагування чи видалення (Update or Delete)
             {
                 idOf.Text = Department.Id.ToString();
                 Depart.Text = Department.Name;
                 Delete.IsEnabled = true;
             }
+            idOf.Text = Department.Id.ToString();
         }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            timer.Stop();
+        }
+        #endregion
+        //ПЕРЕВІРКА НА ВВЕДЕННЯ ДАНИХ
+        #region CONDITIONS
+        private void CheckNameField(object sender, EventArgs args)
+        {
+            if (Depart.Text == Department.Name)
+            {
+                SaveButtonState = false;
+                inputWasChaged = false;
+            }
+            else
+            {
+                inputWasChaged = true;
+                if (!stringIsEmpty)
+                {
+                    SaveButtonState = true;
+                }
+            }
+
+            if (Depart.Text.Trim() == String.Empty)
+            {
+                SaveButtonState = false;
+                stringIsEmpty = true;
+            }
+            else
+            {
+                stringIsEmpty = false;
+                if (inputWasChaged)
+                {
+                    SaveButtonState = true;
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region BUTTONS_EVENTS
+        private void SaveButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (!SaveButtonState)
+            {
+            }
+        }
+        private void SaveButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!SaveButtonState)
+            {
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SaveButtonState)
+            {
+                Department.Name = Depart.Text;
+                this.DialogResult = true;
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                $"Do you really want to remove: {Department.Name}",
+                "Delete field",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                Department = null;
+                this.DialogResult = true;
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false; // те що поверне ShowDialog
+        }
+
+        #endregion
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (Depart.Text == "")
-            {
-                MessageBox.Show("Name is empty, can`t be saved");
-                return;
-            }
-            //else if (MyName.Text == Product.Name && Product != null)
-            //{
-            //    this.DialogResult = false;
-            //    return;
-            //}
-            Department.Name = Depart.Text;
-            String sql = "UPDATE Departments SET Name=(@name) WHERE Id=(@id)";
-            using SqlCommand cmd = new(sql, sqlConnection);
-            cmd.Parameters.AddWithValue("@name", Department.Name);
-            cmd.Parameters.AddWithValue("@id", Department.Id);
 
-            try
-            {
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Insert OK");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            this.DialogResult = true; //то, что вернёт ShowDialog
-            //this.Close();
-        }
-
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show("Are you sure to delete?", "Delete message", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-            {
-                Department.Deleted = DateTime.Now.ToString();
-                MessageBox.Show(Department.Deleted.ToString());
-                String sql = "UPDATE Departments SET DeleteDt=(@Deleted) WHERE Id=(@id)";
-                using SqlCommand cmd = new(sql, sqlConnection);
-                cmd.Parameters.AddWithValue("@Deleted", Department.Deleted);
-                cmd.Parameters.AddWithValue("@id", Department.Id);
-
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Insert OK");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            this.DialogResult = true; //то, что вернёт ShowDialog
-            //this.Close();
         }
     }
 }

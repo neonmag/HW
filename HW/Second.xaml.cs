@@ -48,119 +48,271 @@ namespace HW
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            _connection.Open();
+            LoadDepartments();
+            LoadProducts();
+            LoadManagers();
+            LoadSales();
+        }
+        public void LoadSales()
+        {
+            SqlCommand cmd = new() { Connection = _connection };
             try
             {
-                _connection.Open();
-                SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name, DeleteDt FROM Departments D";
+                cmd.CommandText = "SELECT S.* FROM Sales S WHERE DeleteDt IS NULL";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    departments.Add(new Entity.Departments
-                    {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Deleted = reader.GetString(2)
-                    });
+                    sales.Add(new Entity.Sales(reader));
                 }
                 reader.Close();
                 cmd.Dispose();
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    ex.Message,
+                    "Window will be closed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 this.Close();
             }
+        }
+        public void LoadDepartments()
+        {
+            SqlCommand cmd = new() { Connection = _connection };
             try
             {
-                SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name, Price, DeleteDt FROM Products D";
+                cmd.CommandText = "SELECT D.* FROM Departments D WHERE D.DeleteDt IS NULL";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    products.Add(new(reader));
+                    departments.Add(new(reader));
                 }
                 reader.Close();
                 cmd.Dispose();
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    ex.Message,
+                    "Window will be closed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 this.Close();
             }
+        }
+
+        public void LoadManagers()
+        {
+            SqlCommand cmd = new() { Connection = _connection };
             try
             {
-                SqlCommand cmd = new() { Connection = _connection };
-                cmd.CommandText = "SELECT Id, Name, Surname, Secname, Id_main_dep,Id_sec_dep, Id_chief, DeleteDt FROM Managers D";
+                cmd.CommandText = "SELECT M.* FROM Managers M WHERE DeleteDt IS NULL";
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    managers.Add(new Entity.Managers
-                    {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Surname = reader.GetString(2),
-                        Secname = reader.GetString(3),
-                        IdMainDep = reader.GetGuid(4),
-                        IdSecDep = reader.GetValue(5) == DBNull.Value
-                        ? null
-                        : reader.GetGuid(5),
-                        IdChief = reader.IsDBNull(6)
-                                    ? null
-                                    : reader.GetGuid(6),
-                        Deleted = reader.GetString(7)
-                    }) ;
+                    managers.Add(new Entity.Managers(reader));
                 }
                 reader.Close();
                 cmd.Dispose();
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    ex.Message,
+                    "Window will be closed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 this.Close();
             }
+        }
 
+        public void LoadProducts()
+        {
+            SqlCommand cmd = new() { Connection = _connection };
             try
             {
-                using SqlCommand cmd = new() { Connection = _connection };
-
-                cmd.CommandText = "SELECT S.* FROM Sales S";
+                cmd.CommandText = "SELECT P.* FROM Products P WHERE P.DeleteDt IS NULL";
                 var reader = cmd.ExecuteReader();
-
                 while (reader.Read())
-                    sales.Add(new Sales(reader));
-
+                {
+                    products.Add(new Entity.Products(reader));
+                }
                 reader.Close();
+                cmd.Dispose();
             }
             catch (SqlException ex)
             {
-                MessageBox.Show(ex.Message, "Window will be closed", MessageBoxButton.OK, MessageBoxImage.Error);
-                Close();
+                MessageBox.Show(
+                    ex.Message,
+                    "Window will be closed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                this.Close();
             }
+        }
+        private void ExecuteCommand(SqlCommand command, string commandName)
+        {
+            try//виконання команди
+            {
+                command.ExecuteNonQuery(); // NonQuery - без повернення результату
+                MessageBox.Show(
+                    commandName + " successfully complete",
+                    commandName,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            command.Dispose();
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            departmentCrudWindow = new(_connection);
-            departmentCrudWindow.Department = departments[FirstView.SelectedIndex];
-            departmentCrudWindow.ShowDialog();
+            if (sender is ListView item)
+            {
+                if (item.SelectedItem is Entity.Departments department)
+                {
+                    departmentCrudWindow = new();
+                    departmentCrudWindow.Department = department;
+                    if (departmentCrudWindow.ShowDialog() == true)
+                    {
+                        if (departmentCrudWindow.Department is null) //Delete
+                        {
+                            string command =
+                                @"UPDATE Departments
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE Id = @id; ";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", department.Id);
+                            ExecuteCommand(cmd, $"Delete: {department.Name}");
+                            departments.Clear();
+                            LoadDepartments();
+                        }
+                        else // Update
+                        {
+                            //MessageBox.Show(department.ToString());                            
+                            string command =
+                                @"UPDATE Departments
+                                  SET Name = @name
+                                  WHERE Id=@id;";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", department.Id);
+                            cmd.Parameters.AddWithValue("@name", department.Name);
+                            ExecuteCommand(cmd, "Update Department Name");
+                            departments.Clear();
+                            LoadDepartments();
+                        }
+                    }
+                }
+            }
         }
 
         private void SecondView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            productCrudWindow = new(_connection);
-            productCrudWindow.Product = products[SecondView.SelectedIndex];
-            productCrudWindow.ShowDialog();
+            if (sender is ListView item)
+            {
+                if (item.SelectedItem is Entity.Products product)
+                {
+                    productCrudWindow = new();
+                    productCrudWindow.Product = product;
+                    if (productCrudWindow.ShowDialog() == true)
+                    {
+                        if (productCrudWindow.Product is null) //Delete
+                        {
+                            string command =
+                                @"UPDATE Products
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE Id = @id; ";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", product.Id);
+                            ExecuteCommand(cmd, $"Delete: {product.Name}");
+                            products.Clear();
+                            LoadProducts();
+                        }
+                        else // Update
+                        {
+                            string command =
+                                @"UPDATE Products
+                                SET Name = @name, Price = @price
+                                WHERE Id=@id;";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", product.Id);
+                            cmd.Parameters.AddWithValue("@name", product.Name);
+                            cmd.Parameters.AddWithValue("@price", product.Price);
+                            ExecuteCommand(cmd, "Update Department");
+                            products.Clear();
+                            LoadProducts();
+                        }
+                    }
+                }
+            }
         }
 
         private void ThirdView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if(sender is ListView item)
+            if (sender is ListView item)
             {
-                if(item.SelectedItem is Entity.Managers manager)
+                if (item.SelectedItem is Entity.Managers manager)
                 {
-                    ManagerCrudWindow dialog = new(_connection) { Owner = this, Manager = manager };
-                    dialog.ShowDialog();
+                    ManagerCrudWindow dialog = new()
+                    {
+                        Owner = this,
+                        Manager = manager
+                    };
+                    if (dialog.ShowDialog() == true)
+                    {
+                        if (dialog.Manager is null) //Delete
+                        {
+                            string command =
+                                @"UPDATE Managers
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE Id = @id; ";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", manager.Id);
+                            ExecuteCommand(cmd, $"Delete: {manager.Name} {manager.Surname}");
+                            managers.Clear();
+                            LoadManagers();
+                        }
+                        else // Update
+                        {
+                            string command =
+                                @"UPDATE Managers 
+                                SET 
+                                Surname = @surname,
+                                Name = @name, 
+                                Secname = @secname, 
+                                Id_main_dep = @IdMainDep, 
+                                Id_sec_dep = @IdSecDep, 
+                                Id_chief = @IdChief
+                                WHERE Id = @id;";
+
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", manager.Id);
+                            cmd.Parameters.AddWithValue("@surname", manager.Surname);
+                            cmd.Parameters.AddWithValue("@name", manager.Name);
+                            cmd.Parameters.AddWithValue("@secname", manager.Secname);
+                            cmd.Parameters.AddWithValue("@IdMainDep", manager.IdMainDep);
+                            if (manager.IdSecDep != null)
+                                cmd.Parameters.AddWithValue("@IdSecDep", manager.IdSecDep);
+                            else
+                                cmd.Parameters.AddWithValue("@IdSecDep", DBNull.Value);
+
+                            if (manager.IdChief != null)
+                                cmd.Parameters.AddWithValue("@IdChief", manager.IdChief);
+                            else
+                                cmd.Parameters.AddWithValue("@IdChief", DBNull.Value);
+
+                            ExecuteCommand(cmd, "Update Manager");
+                            managers.Clear();
+                            LoadManagers();
+                        }
+                    }
+
                 }
             }
         }
@@ -173,7 +325,7 @@ namespace HW
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            ProductCrudWindow dialog = new(_connection);
+            ProductCrudWindow dialog = new();
             if (dialog.ShowDialog() == true)
             { 
                 if (dialog.Product is not null)
@@ -217,30 +369,39 @@ namespace HW
             {
                 if (item.SelectedItem is Sales sale)
                 {
-                    SalesCrudWindow dialog = new SalesCrudWindow() { Owner = this };
-                    dialog.Sale = sale;
+                    SalesCrudWindow dialog = new() { Owner = this, Sale = sale };
                     if (dialog.ShowDialog() == true)
                     {
-                        if (dialog.Sale is not null)
+                        if (dialog.Sale is null)
                         {
-                            String sql = "UPDATE Sales SET SaleDate=(@sale_dt), Product_Id=(@product), Quantity=(@quantity), Manager_Id=(@manager), DeleteDt=(@delete) WHERE Id=(@id)";
-                            using SqlCommand cmd = new(sql, _connection);
-                            cmd.Parameters.AddWithValue("@sale_dt", dialog.Sale.SaleDate);
-                            cmd.Parameters.AddWithValue("@product", dialog.Sale.Product_Id);
-                            cmd.Parameters.AddWithValue("@quantity", dialog.Sale.Quantity);
-                            cmd.Parameters.AddWithValue("@manager", dialog.Sale.Manager_Id);
-                            cmd.Parameters.AddWithValue("@delete", dialog.Sale.DeleteDt is null ? DBNull.Value : dialog.Sale.DeleteDt);
+                            string command =
+                               @"UPDATE Sales
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE Id = @id; ";
+                            using SqlCommand cmd = new(command, _connection);
+                            cmd.Parameters.AddWithValue("@id", sale.Id);
+                            var product = products.Where(p => p.Id == sale.ProductId).FirstOrDefault();
+                            ExecuteCommand(cmd, $"Delete sale info about: {product.Name}");
+                            sales.Clear();
+                            LoadSales();
+                        }
+                        else
+                        {
+                            string command =
+                               @"UPDATE Sales
+                                 SET
+                                 Quantity = @quantity, 
+                                 Product_Id = @product_id,
+                                 Manager_Id = @manager_id 
+                                 WHERE Id = @id;";
+                            using SqlCommand cmd = new(command, _connection);
                             cmd.Parameters.AddWithValue("@id", dialog.Sale.Id);
-
-                            try
-                            {
-                                cmd.ExecuteNonQuery();
-                                MessageBox.Show("Зміни збережено!");
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+                            cmd.Parameters.AddWithValue("@quantity", dialog.Sale.Quantity);
+                            cmd.Parameters.AddWithValue("@product_id", dialog.Sale.ProductId);
+                            cmd.Parameters.AddWithValue("@manager_id", dialog.Sale.ManagerId);
+                            ExecuteCommand(cmd, "Update Sale");
+                            sales.Clear();
+                            LoadSales();
                         }
                     }
                 }
@@ -254,12 +415,12 @@ namespace HW
             {
                 if (dialog.Sale is not null)
                 {
-                    string sql = "INSERT INTO Sales(Id, SaleDate, Product_Id, Quantity, Manager_Id) VALUES(@id, @saleDt, @productId, @quantity, @managerId)";
+                    string sql = "INSERT INTO Sales(Id, SaleDate, ProductId, Quantity, ManagerId) VALUES(@id, @saleDt, @productId, @quantity, @managerId)";
                     using SqlCommand cmd = new SqlCommand(sql, _connection);
                     cmd.Parameters.AddWithValue("@saleDt", dialog.Sale.SaleDate);
-                    cmd.Parameters.AddWithValue("@productId", dialog.Sale.Product_Id);
+                    cmd.Parameters.AddWithValue("@productId", dialog.Sale.ProductId);
                     cmd.Parameters.AddWithValue("@quantity", dialog.Sale.Quantity);
-                    cmd.Parameters.AddWithValue("@managerId", dialog.Sale.Manager_Id);
+                    cmd.Parameters.AddWithValue("@managerId", dialog.Sale.ManagerId);
                     cmd.Parameters.AddWithValue("@id", dialog.Sale.Id);
 
                     try

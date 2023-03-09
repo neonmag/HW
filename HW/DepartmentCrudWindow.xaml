@@ -22,9 +22,8 @@
             <TextBox x:Name="Depart"/>
         </StackPanel>
         <WrapPanel Grid.Row="2">
-            <Button Content="Save" Margin="50,0" x:Name="Save" Click="Save_Click"/>
-            <Button Content="Cancel" Margin="50,0" x:Name="Cancel"/>
-            <Button Content="Delete" Margin="0,0" x:Name="Delete" Click="Delete_Click"/>
+            <Button Content="Save" Margin="50,0" x:Name="Save" Click="SaveButton_Click"/>
+            <Button Content="Delete" Margin="0,0" x:Name="Delete" Click="DeleteButton_Click"/>
         </WrapPanel>
     </Grid>
 </Window>

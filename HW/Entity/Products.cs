@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace HW.Entity
         public Guid Id { get; set; }
         public String Name { get; set; }
         public double Price { get; set; }
-        public String Deleted { get; set; }
+        public DateTime? Deleted { get; set; }
         public Products()
         {
             Name = null!;
@@ -23,7 +24,9 @@ namespace HW.Entity
             Id = reader.GetGuid(0);
             Name = reader.GetString(1);
             Price = reader.GetDouble(2);
-            Deleted = reader.GetString(3);
+            Deleted = reader.GetValue("DeleteDt") == DBNull.Value
+            ? null
+            : reader.GetDateTime(3);
         }
     }
 }

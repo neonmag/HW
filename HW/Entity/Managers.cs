@@ -18,7 +18,7 @@ namespace HW.Entity
         public Guid IdMainDep { get; set; }   // Guid - ValueType, вживається для полів з модифікатором NOT NULL
         public Guid? IdSecDep { get; set; }    // Якщо NULL не заборонений, то Guid не підходить, потрібен Guid?
         public Guid? IdChief { get; set; }     // Guid? - скорочення від Nullable<Guid>
-        public string Deleted { get; set; }
+        public DateTime? Deleted { get; set; }
 
         public Managers()
         {
@@ -42,7 +42,7 @@ namespace HW.Entity
                           : reader.GetGuid("Id_chief");
             Deleted = reader.IsDBNull("DeleteDt")
                           ? null
-                          : reader.GetString("DeleteDt");
+                          : reader.GetDateTime("DeleteDt");
         }
         public override string ToString()
         {

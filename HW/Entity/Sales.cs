@@ -14,24 +14,28 @@ namespace HW.Entity
     {
         public Guid Id { get; set; }
         public DateTime SaleDate { get; set; }
-        public Guid Product_Id { get; set; }
-        public double Quantity { get; set; }
-        public Guid Manager_Id { get; set; }
+        public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
+        public Guid ManagerId { get; set; }
         public DateTime? DeleteDt { get; set; }
+
         public Sales()
         {
             Id = Guid.NewGuid();
-            SaleDate = DateTime.Now;
             Quantity = 1;
+            SaleDate = DateTime.Now;
         }
+
         public Sales(SqlDataReader reader)
         {
             Id = reader.GetGuid("Id");
-            SaleDate = reader.GetDateTime("SaleDate");
-            Product_Id = reader.GetGuid("Product_Id");
-            Quantity = reader.GetDouble("Quantity");
-            Manager_Id = reader.GetGuid("Manager_Id");
-            DeleteDt = reader.GetValue("DeleteDt") == DBNull.Value ? null : reader.GetDateTime("DeleteDt");
+            SaleDate = (DateTime)reader.GetValue("SaleDate");
+            ProductId = reader.GetGuid("ProductId");
+            Quantity = reader.GetInt32("Quantity");
+            ManagerId = reader.GetGuid("ManagerId");
+            DeleteDt = reader.GetValue("DeleteDt") == DBNull.Value
+                ? null
+                : (DateTime)reader.GetValue("DeleteDt");
         }
     }
 }

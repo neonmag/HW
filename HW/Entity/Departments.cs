@@ -13,7 +13,7 @@ namespace HW.Entity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string? Deleted { get; set; }
+        public DateTime? Deleted { get; set; }
         public Departments()
         {
             Id = Guid.NewGuid();
@@ -23,7 +23,7 @@ namespace HW.Entity
         {
             Id = reader.GetGuid("Id");
             Name = reader.GetString("Name");
-            Deleted = reader.GetValue("DeleteDt") == DBNull.Value ? null : reader.GetString("DeleteDt");
+            Deleted = reader.GetValue("DeleteDt") == DBNull.Value ? null : reader.GetDateTime("DeleteDt");
         }
         public override string ToString()
         {

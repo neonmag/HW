@@ -91,6 +91,7 @@ namespace HW
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
             try
             {
                 _connection.Open();
@@ -104,6 +105,7 @@ namespace HW
                 MessageBox.Show(ex.Message);
                 this.Close();
             }
+
             ShowMonitor();
             ShowProducts();
             ShowDepartments();

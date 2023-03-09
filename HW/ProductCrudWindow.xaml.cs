@@ -25,11 +25,10 @@ namespace HW
     {
         public Entity.Products Product { get; set; }
         public SqlConnection sqlConnection;
-        public ProductCrudWindow(SqlConnection sqlConnection)  
+        public ProductCrudWindow()  
         {
             InitializeComponent();
             Product = null!;
-            this.sqlConnection = sqlConnection;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -84,27 +83,16 @@ namespace HW
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure to delete?", "Delete message", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            var result = MessageBox.Show(
+                $"Do you really want to remove: {Product.Name}",
+                "Delete field",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
             {
-                Product.Deleted = DateTime.Now.ToString();
-                MessageBox.Show(Product.Deleted.ToString());
-                String sql = "UPDATE Products SET DeleteDt=(@Deleted) WHERE Id=(@id)";
-                using SqlCommand cmd = new(sql, sqlConnection);
-                cmd.Parameters.AddWithValue("@Deleted", Product.Deleted);
-                cmd.Parameters.AddWithValue("@id", Product.Id);
-
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Insert OK");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                Product = null;
+                this.DialogResult = true;
             }
-            this.DialogResult = true; //то, что вернёт ShowDialog
-            //this.Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
