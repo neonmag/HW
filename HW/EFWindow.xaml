@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HW"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="EFWindow" Height="450" Width="800">
+        Title="EFWindow" Height="850" Width="800">
     <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -70,6 +70,89 @@
                     </Style>
                 </ListView.Resources>
             </ListView>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label HorizontalAlignment="Center" FontSize="19" Content="Daily statistics"/>
+                <Button Content="Generate sales" FontSize="18" Margin="20 3 0 3" Padding="7 0 7 3"
+                        x:Name="GenerateSales_Btn" Click="GenerateSales_Btn_Click"/>
+            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!--#region General stats-->
+                <Label Grid.Row="0" Grid.Column="0" Content="Start sales"/>
+                <Label Grid.Row="0" Grid.Column="1" x:Name="StartMoment_Lbl"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="End sales"/>
+                <Label Grid.Row="1" Grid.Column="1" x:Name="FinishMoment_Lbl"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Amount of sales"/>
+                <Label Grid.Row="2" Grid.Column="1" x:Name="SalesChecks_Lbl"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Amount of saled things"/>
+                <Label Grid.Row="3" Grid.Column="1" x:Name="SalesPcs_Lbl"/>
+
+                <Label Grid.Row="4" Grid.Column="0" Content="Max things"/>
+                <Label Grid.Row="4" Grid.Column="1" x:Name="BestPcs_Lbl"/>
+
+                <Label Grid.Row="5" Grid.Column="0" Content="Average check in things"/>
+                <Label Grid.Row="5" Grid.Column="1" x:Name="AvgPcs_Lbl"/>
+
+                <Label Grid.Row="6" Grid.Column="0" Content="Backed things"/>
+                <Label Grid.Row="6" Grid.Column="1" x:Name="DeletedCount_Lbl"/>
+                <!--#endregion-->
+                <Separator Grid.Row="7" Grid.ColumnSpan="2"/>
+                <!--#region Products stats-->
+                <Label Grid.Row="8" Grid.Column="0" Content="The best product in checks"/>
+                <Label Grid.Row="8" Grid.Column="1" x:Name="BestProduct_Lbl"/>
+
+                <Label Grid.Row="9" Grid.Column="0" Content="The best product amount"/>
+                <Label Grid.Row="9" Grid.Column="1" x:Name="BestProductByItems_Lbl"/>
+
+                <Label Grid.Row="10" Grid.Column="0" Content="The best product in money"/>
+                <Label Grid.Row="10" Grid.Column="1" x:Name="BestProductByMoney_Lbl"/>
+                <!--#endregion-->
+                <Separator Grid.Row="11" Grid.ColumnSpan="2"/>
+                <!--#region Managers stats-->
+                <Label Grid.Row="12" Grid.Column="0" Content="Best seller cheks"/>
+                <Label Grid.Row="12" Grid.Column="1" x:Name="BestManager_Lbl"/>
+
+                <Label Grid.Row="13" Grid.Column="0" Content="Top 3"/>
+                <Label Grid.Row="13" Grid.Column="1" x:Name="Top3ManagersByItems_Lbl"/>
+
+                <Label Grid.Row="14" Grid.Column="0" Content="The best seller"/>
+                <Label Grid.Row="14" Grid.Column="1" x:Name="BestManagerByMoney_Lbl"/>
+                <!--#endregion-->
+
+                <!--#region Departments stats-->
+                <Label Grid.Row="0" Grid.Column="2" 
+                       Grid.ColumnSpan="2" Grid.RowSpan="14" 
+                       x:Name="DepartmentsStats_Lbl"/>
+                <!--#endregion-->
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>
