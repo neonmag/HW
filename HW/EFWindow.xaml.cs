@@ -69,7 +69,7 @@ namespace HW
             {
                 //dialog.Department -- інша сутність, треба замінити під EF
                 efContext.Departments.Add(
-                    new Department()
+                    new HW.EFCore.Department()
                     {
                         Name = dialog.Department.Name,
                         Id = dialog.Department.Id
@@ -330,6 +330,32 @@ namespace HW
                 DepartmentsStats_Lbl.Content += $"{department.Department.Name} -- {department.Cnt} -- {department.Sum}\n";
             }
 
+            ///
+            var queryDeps = efContext.Departments.ToList()
+            .GroupJoin(
+            efContext.Managers.GroupJoin(
+            todaySales,
+            m => m.Id,
+            s => s.ManagerId,
+            (m, sales) => new
+            {
+                IdDep = m.IdMainDep,
+                Name = m.Name,
+                Cnt = sales.Count(),
+                Sum = sales.Join(efContext.Products, sale => sale.ProductId, product => product.Id, (sale, product) => sale.Quantity * product.Price).Sum()
+            }
+            ).OrderByDescending(g => g.Cnt),
+            d => d.Id,
+            man => man.IdDep,
+            (dep, managers) => new
+            {
+                Name = dep.Name,
+                Cnt = managers.Sum(m => m.Cnt),
+                Sum = managers.Sum(m => m.Sum)
+            }
+            ).OrderByDescending(it => it.Cnt);
+
+            DepartmentsStatList.ItemsSource = queryDeps;
 
             #endregion
         }
@@ -345,17 +371,17 @@ namespace HW
             for (int i = 0; i < 100; i++)
             {
                 int indexM = random.Next(manCnt);
-                Manager manager = efContext.Managers.Skip(indexM).First();
+                HW.EFCore.Manager manager = efContext.Managers.Skip(indexM).First();
 
                 int indexP = random.Next(prodCnt);
-                Product product = efContext.Products.Skip(indexP).First();
+                HW.EFCore.Product product = efContext.Products.Skip(indexP).First();
 
                 DateTime moment = DateTime.Today.AddSeconds(random.Next(0, 86400));
 
                 int max = Convert.ToInt32(20 * (1 - product.Price / maxPrice) + 2);
                 int quantity = random.Next(1, max);
 
-                efContext.Sales.Add(new Sale()
+                efContext.Sales.Add(new HW.EFCore.Sale()
                 {
                     Id = Guid.NewGuid(),
                     ManagerId = manager.Id,
